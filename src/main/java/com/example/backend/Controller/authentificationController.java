@@ -4,20 +4,17 @@ import com.example.backend.Sevice.authentificationService;
 import com.example.backend.auth.authentificationRequest;
 import com.example.backend.auth.authentificationResponse;
 import com.example.backend.auth.registerRequest;
-import com.nimbusds.openid.connect.sdk.AuthenticationResponse;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin
 public class authentificationController {
     private final authentificationService service;
 
