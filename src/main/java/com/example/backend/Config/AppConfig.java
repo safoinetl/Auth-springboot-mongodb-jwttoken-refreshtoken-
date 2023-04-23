@@ -1,5 +1,6 @@
 package com.example.backend.Config;
 
+import com.example.backend.auth.authentificationRequest;
 import com.example.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,10 @@ public class AppConfig {
     public  UserDetailsService userDetailsService() {
         return  username -> repository.findByEmail(username)
                 .orElseThrow(()->new UsernameNotFoundException("Username not found"));
+    }
+    @Bean
+    public authentificationRequest createAuthentificationRequest() {
+        return new authentificationRequest();
     }
     @Bean
     public AuthenticationProvider authenticationProvider() {
