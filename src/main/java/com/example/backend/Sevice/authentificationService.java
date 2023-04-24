@@ -136,7 +136,9 @@ public class authentificationService  {
     }
 
     public Object getCurrentUser() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = repository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return user ;
+
     }
 }
 
