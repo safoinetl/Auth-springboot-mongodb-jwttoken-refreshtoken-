@@ -1,5 +1,6 @@
 package com.example.backend.Sevice;
 
+import ch.qos.logback.core.spi.ErrorCodes;
 import com.example.backend.Config.JwtService;
 import com.example.backend.Token.Token;
 import com.example.backend.Token.TokenType;
@@ -16,17 +17,23 @@ import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponseException;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class authentificationService {
+public class authentificationService  {
     private final UserRepository repository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -67,7 +74,7 @@ public class authentificationService {
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         System.out.println(jwtToken);
-        return  authentificationResponse.builder()
+        return authentificationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -103,7 +110,7 @@ public class authentificationService {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
         refreshToken = authHeader.substring(7);
@@ -127,4 +134,9 @@ public class authentificationService {
             }
         }
     }
+
+    public Object getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 }
+

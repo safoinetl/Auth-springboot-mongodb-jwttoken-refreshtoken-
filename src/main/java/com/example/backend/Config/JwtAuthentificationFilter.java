@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,8 +20,11 @@ import java.io.IOException;
 @RequiredArgsConstructor
 
 public class JwtAuthentificationFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
+
+    @Autowired
     private UserDetailsService userDetailsService;
+
+    private final JwtService jwtService;
     @Override
     protected void doFilterInternal( @NonNull HttpServletRequest request,
                                      @NonNull HttpServletResponse response,
@@ -37,7 +41,7 @@ public class JwtAuthentificationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         UserEmail = jwtService.extractUsername(jwt);
         if ( UserEmail != null && SecurityContextHolder.getContext().getAuthentication()==null) {
-            UserDetails userDetails =this.userDetailsService.loadUserByUsername(UserEmail);
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(UserEmail);
             if (jwtService.isTokenValid(jwt,userDetails)){
                 UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(
                         userDetails,
