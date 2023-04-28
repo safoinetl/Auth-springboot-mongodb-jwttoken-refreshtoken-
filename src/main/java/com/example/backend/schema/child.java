@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.time.*;
 import java.util.Date;
 
+
 @Document
 @Builder
 @Data
@@ -28,7 +29,7 @@ public class child {
     private String lastName;
     private Integer age;
     private Date BirthDate;
-    @Indexed(unique = true)
+    @Indexed
     private String disabledCard;
     @CreationTimestamp
     private LocalTime createdAt= LocalTime.now(ZoneId.of("GMT+08:00"));

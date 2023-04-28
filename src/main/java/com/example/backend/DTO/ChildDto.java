@@ -1,6 +1,5 @@
 package com.example.backend.DTO;
 
-import jakarta.persistence.GeneratedValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +19,6 @@ public class ChildDto {
     private String lastName;
     private Integer age;
     private Date BirthDate;
+    @Indexed
+    private String disabledCard;
 }

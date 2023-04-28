@@ -1,6 +1,5 @@
 package com.example.backend.Sevice;
 
-import ch.qos.logback.core.spi.ErrorCodes;
 import com.example.backend.Config.JwtService;
 import com.example.backend.Token.Token;
 import com.example.backend.Token.TokenType;
@@ -12,7 +11,6 @@ import com.example.backend.repository.UserRepository;
 import com.example.backend.schema.Role;
 import com.example.backend.schema.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,15 +19,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponseException;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +31,7 @@ public class authentificationService  {
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
-    private final authentificationRequest authentificationRequest;
+    //private final authentificationRequest authentificationRequest;
 
     public authentificationResponse register(registerRequest request) {
         var user = User.builder()
@@ -136,8 +127,7 @@ public class authentificationService  {
     }
 
     public Object getCurrentUser() {
-        Optional<User> user = repository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        return user ;
+        return repository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
     }
 }

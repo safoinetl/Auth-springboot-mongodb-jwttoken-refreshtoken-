@@ -1,17 +1,14 @@
 package com.example.backend.schema;
 
 import com.example.backend.Token.Token;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -36,7 +33,7 @@ public class User implements UserDetails {
     private String id;
     private String firstName;
     private String lastName;
-    @Indexed(unique = true)
+    @Indexed
     private String email;
     @JsonIgnore
     private String password;
