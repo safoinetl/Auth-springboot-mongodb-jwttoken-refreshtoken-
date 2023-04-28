@@ -32,8 +32,8 @@ public class ResponsableController {
     }
 
     @PostMapping("/group/{userId}")
-        public ResponseEntity<String> addChildToGroup(@RequestBody child childId , @PathVariable User userId,@RequestBody ) {
-        try {groupDTO request
+        public ResponseEntity<String> addChildToGroup(@RequestBody child childId , @PathVariable User userId,@RequestBody groupDTO request ) {
+        try {
             System.out.println(childId);
             System.out.println(userId);
             String response = service.addChildToGrp(childId, userId,request);
@@ -41,5 +41,10 @@ public class ResponsableController {
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+    @GetMapping("/group/{id}")
+    public ResponseEntity<group> search(@PathVariable() String id ){
+        return ResponseEntity.ok(service.getGroupById(id);
+
     }
 }

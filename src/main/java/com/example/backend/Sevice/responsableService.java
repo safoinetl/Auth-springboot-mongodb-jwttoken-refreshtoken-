@@ -52,5 +52,11 @@ public class responsableService {
         }
         return "Group added successfully";
     }
+    public group getGroupById(String id) {
+        
+    Optional<group> gp = this.groupRepository.findById(id);
+    return gp.isPresent() ? gp.get(): null;
+    
+    }
 }
 
