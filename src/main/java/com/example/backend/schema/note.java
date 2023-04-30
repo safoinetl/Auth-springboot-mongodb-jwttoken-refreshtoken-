@@ -1,46 +1,35 @@
 package com.example.backend.schema;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.ArrayList;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 
 @Document
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class group {
+public class note {
     @MongoId(FieldType.OBJECT_ID)
     private String id;
-    @Indexed
-    private String nameG;
-    @LastModifiedDate
-    private Date lastModifiedAt;
-    @DBRef
-    private List<child> children;
+    private String subject;
+    private String desc;
+    @CreationTimestamp
+    private LocalTime createdAt= LocalTime.now(ZoneId.of("GMT+08:00"));
+    @UpdateTimestamp
+    private LocalTime updatedAt = LocalTime.now(ZoneId.of("GMT+08:00"));
     @DBRef
     private User user;
-    public List<child> getChildren() {
-        if (children == null) {
-            children = new ArrayList<>();
-        }
-        else {
-            children = children;
-        }
-        return children;
-    }
-
-    @DBRef
-    private activity activity;
-
-
 }
