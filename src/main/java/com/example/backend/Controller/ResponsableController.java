@@ -35,7 +35,7 @@ public class ResponsableController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/group/{userId}")
-        public ResponseEntity<String> addChildToGroup(@RequestBody child childId , @PathVariable User userId,@RequestBody groupDTO request ) {
+        public ResponseEntity<String> addChildToGroup(@RequestBody String childId , @PathVariable String userId,@RequestBody groupDTO request ) {
         try {
             System.out.println(childId);
             System.out.println(userId);
@@ -97,7 +97,7 @@ public class ResponsableController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/deleteActivity/{id}")
+    @DeleteMapping("/deleteUser/{id}")
     public void deleteUser(@PathVariable String id) {
         this.service.deleteUser(id);
     }

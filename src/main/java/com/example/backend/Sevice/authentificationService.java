@@ -8,8 +8,10 @@ import com.example.backend.auth.authentificationResponse;
 import com.example.backend.auth.registerRequest;
 import com.example.backend.repository.TokenRepository;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.repository.groupRepository;
 import com.example.backend.schema.Role;
 import com.example.backend.schema.User;
+import com.example.backend.schema.group;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,19 +31,20 @@ public class authentificationService {
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private  final groupRepository groupRepository;
 
     private final AuthenticationManager authenticationManager;
-    //private final authentificationRequest authentificationRequest;
 
-    public authentificationResponse register(registerRequest request) {
+    public authentificationResponse registerAdmin(registerRequest request) {
         var user = User.builder()
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(Role.ADMIN)
                 .build();
-        var savedUser = repository.save(user);
+        group grp = new group();
+        User savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
@@ -51,7 +54,6 @@ public class authentificationService {
                 .refreshToken(refreshToken)
                 .build();
     }
-
     public authentificationResponse authenticate(authentificationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

@@ -22,7 +22,7 @@ public class authentificationController {
     public ResponseEntity<authentificationResponse> register(
             @RequestBody registerRequest request
     ) {
-        return ResponseEntity.ok(service.register(request));
+        return ResponseEntity.ok(service.registerAdmin(request));
     }
     @PostMapping("/authenticate")
     public ResponseEntity<authentificationResponse> authenticate(

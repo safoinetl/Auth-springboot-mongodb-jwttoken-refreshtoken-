@@ -6,6 +6,7 @@ import com.example.backend.DTO.UserDto;
 import com.example.backend.repository.*;
 import com.example.backend.schema.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,15 +22,16 @@ public class responsableService {
 
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-
-    public responsableService(ChildRepository childRepository, UserRepository repository, groupRepository groupRepository, ActivityRepository activityRepository, NoteRepository noteRepository, UserRepository userRepository) {
+    public responsableService(ChildRepository childRepository, UserRepository repository, groupRepository groupRepository, ActivityRepository activityRepository, NoteRepository noteRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.childRepository = childRepository;
         this.repository = repository;
         this.groupRepository = groupRepository;
         this.activityRepository = activityRepository;
         this.noteRepository = noteRepository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public child addingChild(ChildDto request) {
@@ -49,7 +51,7 @@ public class responsableService {
     public void  deleteChild (String id) {
         this.childRepository.deleteById(id);
     }
-    public String addChildToGrp(child childId, User userId, groupDTO request) {
+    /*public String addChildToGrp(child childId, User userId, groupDTO request) {
         Optional<child> searchChild = this.childRepository.findById(childId.getId());
         Optional<User> searchUser = this.repository.findById(userId.getId());
         if (searchUser.isEmpty() || searchChild.isEmpty()) {
@@ -60,12 +62,28 @@ public class responsableService {
             User newUser = searchUser.get();
             group newGroup = new group();
             System.out.println(request);
-            newGroup.setUser(newUser);
+            newGroup.setUserG(newUser);
             newGroup.getChildren().add(newChild);
             newGroup.setNameG(request.getNameG());
             this.groupRepository.save(newGroup);
         }
         return "Group added successfully";
+    }*/
+    public String addChildToGrp(String childId, String userG, groupDTO request) {
+        Optional<child> searchChild = this.childRepository.findById(childId);
+        Optional<group> searchGroup = this.groupRepository.findByUserG(userG);
+        if (searchGroup.isEmpty() || searchChild.isEmpty()) {
+            throw new UsernameNotFoundException("Something went wrong. Please check your inputs.");
+        }
+        else {
+            child newChild = searchChild.get();
+            group groupFound = searchGroup.get();
+            System.out.println(request);
+            groupFound.getChildren().add(newChild);
+            groupFound.setNameG(request.getNameG());
+            this.groupRepository.save(groupFound);
+            return "child added successfully";
+        }
     }
     public group getGroupById(String id) {
 
@@ -92,7 +110,12 @@ public class responsableService {
         newUser.setFirstName(request.getFirstName());
         newUser.setLastName(request.getLastName());
         newUser.setEmail(request.getEmail());
-        newUser.setPassword(request.getPassword());
+        newUser.setRole(Role.USER);
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        group grp = new group();
+        grp.setNameG(newUser.getUsername()+"group");
+        grp.setUserG(newUser);
+        groupRepository.save(grp);
         return userRepository.save(newUser);
     }
 

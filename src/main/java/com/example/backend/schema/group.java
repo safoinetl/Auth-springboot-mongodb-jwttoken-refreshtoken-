@@ -28,7 +28,7 @@ public class group {
     @DBRef
     private List<child> children;
     @DBRef
-    private User user;
+    private User userG;
     public List<child> getChildren() {
         if (children == null) {
             children = new ArrayList<>();
