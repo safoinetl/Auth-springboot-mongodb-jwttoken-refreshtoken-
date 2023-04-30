@@ -44,7 +44,7 @@ public class ResponsableController {
     }
     @GetMapping("/group/{id}")
     public ResponseEntity<group> search(@PathVariable() String id ){
-        return ResponseEntity.ok(service.getGroupById(id);
+        return ResponseEntity.ok(service.getGroupById(id));
 
     }
 }
