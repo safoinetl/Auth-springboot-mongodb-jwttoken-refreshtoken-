@@ -46,7 +46,7 @@ public class User implements UserDetails {
     @DBRef
     private List<Token> tokens;
     @DBRef
-    private List<group> group;
+    private group group;
 
 
     @Override

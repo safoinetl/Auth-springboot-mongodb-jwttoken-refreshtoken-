@@ -5,17 +5,17 @@ import com.example.backend.DTO.ChildDto;
 import com.example.backend.DTO.UserDto;
 import com.example.backend.repository.*;
 import com.example.backend.schema.*;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.bson.types.ObjectId;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class responsableService {
     private final ChildRepository childRepository;
-    private final UserRepository repository;
     private final groupRepository groupRepository;
     private final ActivityRepository activityRepository;
     private final NoteRepository noteRepository;
@@ -26,7 +26,6 @@ public class responsableService {
 
     public responsableService(ChildRepository childRepository, UserRepository repository, groupRepository groupRepository, ActivityRepository activityRepository, NoteRepository noteRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.childRepository = childRepository;
-        this.repository = repository;
         this.groupRepository = groupRepository;
         this.activityRepository = activityRepository;
         this.noteRepository = noteRepository;
@@ -69,21 +68,51 @@ public class responsableService {
         }
         return "Group added successfully";
     }*/
-    public String addChildToGrp(String childId, String userG, groupDTO request) {
-        Optional<child> searchChild = this.childRepository.findById(childId);
-        Optional<group> searchGroup = this.groupRepository.findByUserG(userG);
-        if (searchGroup.isEmpty() || searchChild.isEmpty()) {
-            throw new UsernameNotFoundException("Something went wrong. Please check your inputs.");
+    public String addChildToGrp(ObjectId childId, String userG) {
+
+        Optional<child> searchChild = childRepository.findById(childId.toString());
+        if (searchChild.isEmpty()) {
+            throw new IllegalArgumentException(" child not found.");
         }
-        else {
-            child newChild = searchChild.get();
-            group groupFound = searchGroup.get();
-            System.out.println(request);
-            groupFound.getChildren().add(newChild);
-            groupFound.setNameG(request.getNameG());
-            this.groupRepository.save(groupFound);
-            return "child added successfully";
+        Optional<group> searchGroup = groupRepository.findByUserG(userG);
+        if (searchGroup.isEmpty()) {
+            throw new IllegalArgumentException(" group not found.");
         }
+        child newChild = searchChild.get();
+        System.out.println(newChild);
+        group groupFound = searchGroup.get();
+        System.out.println(groupFound);
+        if (groupFound.getChildren().contains(newChild)) {
+            return "Child is already in the group.";
+        }
+
+        groupFound.getChildren().add(newChild);
+        groupRepository.save(groupFound);
+
+        return "Child added successfully to the group.";
+    }
+    public String addChildsToGrp(List<String> childIds, String userG) {
+        List<child> children = childRepository.findAllById(childIds);
+        if (children.isEmpty()) {
+            throw new IllegalArgumentException("No children found with the given IDs.");
+        }
+        Optional<group> searchGroup = groupRepository.findByUserG(userG);
+        if (searchGroup.isEmpty()) {
+            throw new IllegalArgumentException("Group not found.");
+        }
+        group groupFound = searchGroup.get();
+        Set<child> groupChildren = (Set<child>) groupFound.getChildren();
+        int initialGroupSize = groupChildren.size();
+        children.forEach(child -> {
+            if (!groupChildren.contains(child)) {
+                groupChildren.add(child);
+            }
+        });
+        if (groupChildren.size() == initialGroupSize) {
+            return "All children are already in the group.";
+        }
+        groupRepository.save(groupFound);
+        return "Children added successfully to the group.";
     }
     public group getGroupById(String id) {
 
@@ -106,17 +135,22 @@ public class responsableService {
         return activityRepository.save(newActivity);
     }
     public User addUser(UserDto request) {
+        // Add user
         User newUser= new User();
         newUser.setFirstName(request.getFirstName());
         newUser.setLastName(request.getLastName());
         newUser.setEmail(request.getEmail());
         newUser.setRole(Role.USER);
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        this.userRepository.save(newUser);
+
+        // Add group
         group grp = new group();
         grp.setNameG(newUser.getUsername()+"group");
         grp.setUserG(newUser);
         groupRepository.save(grp);
-        return userRepository.save(newUser);
+
+        return newUser;
     }
 
     public List<User> listUser() {

@@ -6,6 +6,7 @@ import com.example.backend.DTO.UserDto;
 import com.example.backend.Sevice.responsableService;
 import com.example.backend.schema.*;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,20 +27,18 @@ public class ResponsableController {
         this.service = service;
     }
 
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasRole('USER')")
     @PostMapping("/registerChild")
     public ResponseEntity<child> register(
             @RequestBody ChildDto request
     ) {
         return ResponseEntity.ok(service.addingChild(request));
     }
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/group/{userId}")
-        public ResponseEntity<String> addChildToGroup(@RequestBody String childId , @PathVariable String userId,@RequestBody groupDTO request ) {
+    //@PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/group/user/{userId}/child/{childId}")
+        public ResponseEntity<String> addChildToGroup(@PathVariable ObjectId childId    , @PathVariable String userId ) {
         try {
-            System.out.println(childId);
-            System.out.println(userId);
-            String response = service.addChildToGrp(childId, userId,request);
+            String response = service.addChildToGrp(childId, userId);
             return ResponseEntity.ok(response);
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -83,7 +82,7 @@ public class ResponsableController {
         this.service.deleteActivity(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/registerUser")
     public ResponseEntity<User> registerActivity(
             @RequestBody UserDto request

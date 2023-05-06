@@ -3,6 +3,7 @@ package com.example.backend.schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Document
 @Data
@@ -29,18 +31,14 @@ public class group {
     private List<child> children;
     @DBRef
     private User userG;
+    @DBRef
+    private activity activity;
+
     public List<child> getChildren() {
         if (children == null) {
             children = new ArrayList<>();
         }
-        else {
-            children = children;
-        }
         return children;
     }
-
-    @DBRef
-    private activity activity;
-
 
 }
