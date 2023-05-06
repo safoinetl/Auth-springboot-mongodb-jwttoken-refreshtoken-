@@ -88,6 +88,8 @@ public class responsableService {
 
         groupFound.getChildren().add(newChild);
         groupRepository.save(groupFound);
+        newChild.setGroup(groupFound);
+        childRepository.save(newChild);
 
         return "Child added successfully to the group.";
     }
@@ -124,7 +126,7 @@ public class responsableService {
 
         // Add group
         group grp = new group();
-        grp.setNameG(newUser.getUsername()+"group");
+        grp.setNameG(newUser.getFirstName()+" "+"group");
         grp.setUserG(newUser);
         groupRepository.save(grp);
 
