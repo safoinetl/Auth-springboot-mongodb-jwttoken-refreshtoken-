@@ -91,29 +91,7 @@ public class responsableService {
 
         return "Child added successfully to the group.";
     }
-    public String addChildsToGrp(List<String> childIds, String userG) {
-        List<child> children = childRepository.findAllById(childIds);
-        if (children.isEmpty()) {
-            throw new IllegalArgumentException("No children found with the given IDs.");
-        }
-        Optional<group> searchGroup = groupRepository.findByUserG(userG);
-        if (searchGroup.isEmpty()) {
-            throw new IllegalArgumentException("Group not found.");
-        }
-        group groupFound = searchGroup.get();
-        Set<child> groupChildren = (Set<child>) groupFound.getChildren();
-        int initialGroupSize = groupChildren.size();
-        children.forEach(child -> {
-            if (!groupChildren.contains(child)) {
-                groupChildren.add(child);
-            }
-        });
-        if (groupChildren.size() == initialGroupSize) {
-            return "All children are already in the group.";
-        }
-        groupRepository.save(groupFound);
-        return "Children added successfully to the group.";
-    }
+
     public group getGroupById(String id) {
 
     Optional<group> gp = this.groupRepository.findById(id);
