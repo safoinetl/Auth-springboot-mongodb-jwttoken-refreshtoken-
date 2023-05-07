@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 public class registerRequest {
     private String firstname;
     private String lastname;
-    @Indexed
+    @Indexed(unique= true)
     private String email;
     private String password;
 }

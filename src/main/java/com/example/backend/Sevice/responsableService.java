@@ -1,8 +1,12 @@
 package com.example.backend.Sevice;
 
+import com.example.backend.Config.JwtService;
 import com.example.backend.DTO.ActivityDto;
 import com.example.backend.DTO.ChildDto;
 import com.example.backend.DTO.UserDto;
+import com.example.backend.Token.Token;
+import com.example.backend.Token.TokenType;
+import com.example.backend.auth.authentificationResponse;
 import com.example.backend.repository.*;
 import com.example.backend.schema.*;
 import org.bson.types.ObjectId;
@@ -19,16 +23,19 @@ public class responsableService {
     private final groupRepository groupRepository;
     private final ActivityRepository activityRepository;
     private final NoteRepository noteRepository;
+    private final TokenRepository tokenRepository;
 
-
+    private final JwtService jwtService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public responsableService(ChildRepository childRepository, UserRepository repository, groupRepository groupRepository, ActivityRepository activityRepository, NoteRepository noteRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public responsableService(ChildRepository childRepository, UserRepository repository, groupRepository groupRepository, ActivityRepository activityRepository, NoteRepository noteRepository, TokenRepository tokenRepository, JwtService jwtService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.childRepository = childRepository;
         this.groupRepository = groupRepository;
         this.activityRepository = activityRepository;
         this.noteRepository = noteRepository;
+        this.tokenRepository = tokenRepository;
+        this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -117,8 +124,25 @@ public class responsableService {
         grp.setNameG(newUser.getFirstName() + " " + "group");
         grp.setUserG(newUser);
         groupRepository.save(grp);
+        var jwtToken = jwtService.generateToken(newUser,String.valueOf(newUser.getRole()));
+        var refreshToken = jwtService.generateRefreshToken(newUser,String.valueOf(newUser.getRole()));
 
+        saveUserToken(newUser, jwtToken);
+        authentificationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
         return newUser;
+    }
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
     }
 
     public List<User> listUser() {

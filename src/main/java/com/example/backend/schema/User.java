@@ -33,7 +33,7 @@ public class User implements UserDetails {
     private String id;
     private String firstName;
     private String lastName;
-    @Indexed
+    @Indexed(unique= true)
     private String email;
     @JsonIgnore
     private String password;

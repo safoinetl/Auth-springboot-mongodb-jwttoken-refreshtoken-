@@ -12,11 +12,10 @@ import org.springframework.stereotype.Component;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Component
 public class UserDto {
     private String firstName;
     private String lastName;
-    @Indexed
+    @Indexed(unique = true)
     private String email;
     @JsonIgnore
     private String password;

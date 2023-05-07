@@ -43,10 +43,9 @@ public class authentificationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.ADMIN)
                 .build();
-        group grp = new group();
         User savedUser = repository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
+        var jwtToken = jwtService.generateToken(user,String.valueOf(user.getRole()));
+        var refreshToken = jwtService.generateRefreshToken(user,String.valueOf(user.getRole()));
 
         saveUserToken(savedUser, jwtToken);
         return authentificationResponse.builder()
@@ -63,8 +62,8 @@ public class authentificationService {
         );
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
+        var jwtToken = jwtService.generateToken(user, String.valueOf(user.getRole()));
+        var refreshToken = jwtService.generateRefreshToken(user,String.valueOf(user.getRole()));
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         System.out.println(jwtToken);
@@ -113,7 +112,7 @@ public class authentificationService {
             var user = this.repository.findByEmail(userEmail)
                     .orElseThrow();
             if (jwtService.isTokenValid(refreshToken, user)) {
-                var accessToken = jwtService.generateToken(user);
+                var accessToken = jwtService.generateToken(user, String.valueOf(user.getRole()));
                 revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
                 var authResponse = authentificationResponse.builder()
