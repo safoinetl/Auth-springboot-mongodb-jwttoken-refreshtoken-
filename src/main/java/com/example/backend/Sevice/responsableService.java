@@ -6,6 +6,7 @@ import com.example.backend.DTO.UserDto;
 import com.example.backend.repository.*;
 import com.example.backend.schema.*;
 import org.bson.types.ObjectId;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -101,7 +102,6 @@ public class responsableService {
         grp.getActivities().add(newActivity);
         return activityRepository.save(newActivity);
     }
-
     public User addUser(UserDto request) {
         // Add user
         User newUser = new User();
@@ -131,6 +131,10 @@ public class responsableService {
 
     public List<note> listNote() {
         return this.noteRepository.findAll();
+    }
+    public Optional<group> getUsersGroup() {
+         Optional<User> CurrentUser = this.userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return this.groupRepository.findByUserG(CurrentUser.get().getId());
     }
 }
 

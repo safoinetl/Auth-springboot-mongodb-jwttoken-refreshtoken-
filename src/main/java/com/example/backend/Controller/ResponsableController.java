@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/responsable")
@@ -64,7 +65,7 @@ public class ResponsableController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/registerActivity")
+    @PostMapping("/registerActivity/{id}")
     public ResponseEntity<activity> registerActivity(
             @RequestBody ActivityDto request,@PathVariable String id
     ) {
@@ -106,4 +107,10 @@ public class ResponsableController {
     public void listNote() {
         this.service.listNote();
     }
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/usersGroup")
+    public Optional<group> findGroupByUser()
+            {
+                return this.service.getUsersGroup();
+            }
 }

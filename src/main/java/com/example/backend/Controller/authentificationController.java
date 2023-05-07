@@ -38,9 +38,6 @@ public class authentificationController {
     ) throws IOException {
         service.refreshToken( request, response);
     }
-    //@PreAuthorize()
-    //("hasRole("ADMIN")')
-
     @GetMapping("/CurrentAuthent")
     public ResponseEntity<Object> user(
     ) {
