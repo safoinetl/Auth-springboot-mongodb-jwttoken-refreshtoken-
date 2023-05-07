@@ -25,6 +25,7 @@ import java.util.List;
 public class activity {
     @MongoId(FieldType.OBJECT_ID)
     private String id;
+    private String name;
     private String description;
     private Date startingDate;
     private Date endingDate;
@@ -33,17 +34,7 @@ public class activity {
     @UpdateTimestamp
     private LocalTime updatedAt = LocalTime.now(ZoneId.of("GMT+08:00"));
     @DBRef
-    private List<group> groups;
-
-    public List<group> getGroup() {
-        if (groups == null) {
-            groups = new ArrayList<>();
-        }
-        else {
-            groups = groups;
-        }
-        return groups;
-    }
+    private group group;
 
 
 }

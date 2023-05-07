@@ -66,9 +66,9 @@ public class ResponsableController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/registerActivity")
     public ResponseEntity<activity> registerActivity(
-            @RequestBody ActivityDto request
+            @RequestBody ActivityDto request,@PathVariable String id
     ) {
-        return ResponseEntity.ok(service.addActivity(request));
+        return ResponseEntity.ok(service.addActivity(request,id));
     }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listActivity")

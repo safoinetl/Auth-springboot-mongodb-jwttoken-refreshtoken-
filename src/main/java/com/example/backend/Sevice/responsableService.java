@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class responsableService {
@@ -44,30 +43,13 @@ public class responsableService {
     }
 
     public List<child> listChild() {
-        return  this.childRepository.findAll();
+        return this.childRepository.findAll();
     }
 
-    public void  deleteChild (String id) {
+    public void deleteChild(String id) {
         this.childRepository.deleteById(id);
     }
-    /*public String addChildToGrp(child childId, User userId, groupDTO request) {
-        Optional<child> searchChild = this.childRepository.findById(childId.getId());
-        Optional<User> searchUser = this.repository.findById(userId.getId());
-        if (searchUser.isEmpty() || searchChild.isEmpty()) {
-            throw new UsernameNotFoundException("Something went wrong. Please check your inputs.");
-        }
-        else {
-            child newChild = searchChild.get();
-            User newUser = searchUser.get();
-            group newGroup = new group();
-            System.out.println(request);
-            newGroup.setUserG(newUser);
-            newGroup.getChildren().add(newChild);
-            newGroup.setNameG(request.getNameG());
-            this.groupRepository.save(newGroup);
-        }
-        return "Group added successfully";
-    }*/
+
     public String addChildToGrp(ObjectId childId, String userG) {
 
         Optional<child> searchChild = childRepository.findById(childId.toString());
@@ -91,32 +73,38 @@ public class responsableService {
         newChild.setGroup(groupFound);
         childRepository.save(newChild);
 
+
         return "Child added successfully to the group.";
     }
-
     public group getGroupById(String id) {
 
-    Optional<group> gp = this.groupRepository.findById(id);
-    return gp.isPresent() ? gp.get(): null;
+        Optional<group> gp = this.groupRepository.findById(id);
+        return gp.isPresent() ? gp.get() : null;
 
     }
 
     public List<activity> listActivity() {
-        return  this.activityRepository.findAll();
+        return this.activityRepository.findAll();
     }
+
     public void deleteActivity(String id) {
         this.activityRepository.deleteById(id);
     }
-    public activity addActivity(ActivityDto request) {
+
+    public activity addActivity(ActivityDto request, String id) {
+        var grp = getGroupById(id);
         activity newActivity = new activity();
         newActivity.setDescription(request.getDescription());
         newActivity.setStartingDate(request.getStartingDate());
         newActivity.setEndingDate(request.getEndingDate());
+        newActivity.setGroup(grp);
+        grp.getActivities().add(newActivity);
         return activityRepository.save(newActivity);
     }
+
     public User addUser(UserDto request) {
         // Add user
-        User newUser= new User();
+        User newUser = new User();
         newUser.setFirstName(request.getFirstName());
         newUser.setLastName(request.getLastName());
         newUser.setEmail(request.getEmail());
@@ -126,7 +114,7 @@ public class responsableService {
 
         // Add group
         group grp = new group();
-        grp.setNameG(newUser.getFirstName()+" "+"group");
+        grp.setNameG(newUser.getFirstName() + " " + "group");
         grp.setUserG(newUser);
         groupRepository.save(grp);
 
@@ -134,7 +122,7 @@ public class responsableService {
     }
 
     public List<User> listUser() {
-        return  this.userRepository.findAll();
+        return this.userRepository.findAll();
     }
 
     public void deleteUser(String id) {
@@ -142,7 +130,7 @@ public class responsableService {
     }
 
     public List<note> listNote() {
-        return  this.noteRepository.findAll();
+        return this.noteRepository.findAll();
     }
 }
 

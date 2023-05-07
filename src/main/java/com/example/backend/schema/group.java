@@ -32,13 +32,19 @@ public class group {
     @DBRef
     private User userG;
     @DBRef
-    private activity activity;
+    private List<activity> activities;
 
     public List<child> getChildren() {
         if (children == null) {
             children = new ArrayList<>();
         }
         return children;
+    }
+    public List<activity> getActivities() {
+        if (activities == null) {
+         return new ArrayList<>();
+        }
+        return activities;
     }
 
 }
