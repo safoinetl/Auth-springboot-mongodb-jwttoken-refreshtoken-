@@ -11,7 +11,6 @@ import com.example.backend.repository.UserRepository;
 import com.example.backend.repository.groupRepository;
 import com.example.backend.schema.Role;
 import com.example.backend.schema.User;
-import com.example.backend.schema.group;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,8 +43,8 @@ public class authentificationService {
                 .role(Role.ADMIN)
                 .build();
         User savedUser = repository.save(user);
-        var jwtToken = jwtService.generateToken(user,String.valueOf(user.getRole()));
-        var refreshToken = jwtService.generateRefreshToken(user,String.valueOf(user.getRole()));
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
 
         saveUserToken(savedUser, jwtToken);
         return authentificationResponse.builder()
@@ -62,8 +61,8 @@ public class authentificationService {
         );
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user, String.valueOf(user.getRole()));
-        var refreshToken = jwtService.generateRefreshToken(user,String.valueOf(user.getRole()));
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         System.out.println(jwtToken);
@@ -112,7 +111,7 @@ public class authentificationService {
             var user = this.repository.findByEmail(userEmail)
                     .orElseThrow();
             if (jwtService.isTokenValid(refreshToken, user)) {
-                var accessToken = jwtService.generateToken(user, String.valueOf(user.getRole()));
+                var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
                 var authResponse = authentificationResponse.builder()

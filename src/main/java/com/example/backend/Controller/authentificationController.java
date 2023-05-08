@@ -8,13 +8,13 @@ import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin
 public class authentificationController {
     private final authentificationService service;
 
@@ -29,6 +29,7 @@ public class authentificationController {
             @RequestBody authentificationRequest request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
+
     }
 
     @PostMapping("/refresh-token")
@@ -41,6 +42,11 @@ public class authentificationController {
     @GetMapping("/CurrentAuthent")
     public ResponseEntity<Object> user(
     ) {
-        return ResponseEntity.ok(service.getCurrentUser());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "*");
+        return
+        ResponseEntity.ok()
+                .headers(headers)
+                .body(service.getCurrentUser());
     }
 }

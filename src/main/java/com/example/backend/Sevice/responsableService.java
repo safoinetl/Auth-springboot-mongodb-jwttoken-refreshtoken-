@@ -124,8 +124,8 @@ public class responsableService {
         grp.setNameG(newUser.getFirstName() + " " + "group");
         grp.setUserG(newUser);
         groupRepository.save(grp);
-        var jwtToken = jwtService.generateToken(newUser,String.valueOf(newUser.getRole()));
-        var refreshToken = jwtService.generateRefreshToken(newUser,String.valueOf(newUser.getRole()));
+        var jwtToken = jwtService.generateToken(newUser);
+        var refreshToken = jwtService.generateRefreshToken(newUser);
 
         saveUserToken(newUser, jwtToken);
         authentificationResponse.builder()

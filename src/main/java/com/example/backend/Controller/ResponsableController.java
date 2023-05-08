@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8080/api/responsable", maxAge = 3600)
 @RequestMapping("/api/responsable")
 @RequiredArgsConstructor
-@CrossOrigin
 public class ResponsableController {
     private  responsableService service;
 
@@ -90,11 +90,15 @@ public class ResponsableController {
     ) {
         return ResponseEntity.ok(service.addUser(request));
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listUser")
     public List<User> listUser() {
-        return this.service.listUser();
+
+        return
+               this.service.listUser();
+
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUser/{id}")
