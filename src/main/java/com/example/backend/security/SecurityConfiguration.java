@@ -17,22 +17,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
-
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class securityConfiguration {
+public class SecurityConfiguration {
     private final JwtAuthentificationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
 
     @Bean
-    public SecurityFilterChain  securityFilterChain (HttpSecurity http) throws  Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors() // Enable CORS
+                .cors()
                 .and()
                 .csrf()
                 .disable()
@@ -65,20 +63,17 @@ public class securityConfiguration {
                 .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
 
         return http.build();
-
-
     }
+
     @Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://localhost:5300/node"));
-        config.setAllowedHeaders( Arrays.asList("Origin", "Content-Type","Accept","Authorization"));
-        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPtIONS"));
-        source.registerCorsConfiguration("/**",config);
-        return  new CorsFilter(source);
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://localhost:5300/node"));
+        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
-
-

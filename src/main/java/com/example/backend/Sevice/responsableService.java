@@ -162,9 +162,9 @@ public class responsableService {
          Optional<User> CurrentUser = this.userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return this.groupRepository.findByUserG(CurrentUser.get().getId());
     }
-    public Object getCurrentUser() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
-
+    public User getCurrentUser() {
+        Optional<User> user= this.repository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return user.get();
     }
 }
 

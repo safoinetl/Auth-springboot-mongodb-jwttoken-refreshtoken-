@@ -120,11 +120,8 @@ public class ResponsableController {
     @GetMapping("/CurrentAuthent")
     public ResponseEntity<Object> user(
     ) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "*");
         return
                 ResponseEntity.ok()
-                        .headers(headers)
                         .body(service.getCurrentUser());
     }
 }
