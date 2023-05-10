@@ -100,7 +100,7 @@ public class ResponsableController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUser/{id}")
     public void deleteUser(@PathVariable String id) {
         this.service.deleteUser(id);

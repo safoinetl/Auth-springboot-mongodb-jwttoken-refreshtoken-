@@ -11,6 +11,7 @@ import com.example.backend.repository.*;
 import com.example.backend.schema.*;
 import org.bson.types.ObjectId;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -152,7 +153,11 @@ public class responsableService {
     }
 
     public void deleteUser(String id) {
-        this.activityRepository.deleteById(id);
+        User user = this.userRepository.findById(id).get();
+        if (user==null) {
+            throw new IllegalStateException("User " + id + " is already deleted or does not exist");
+        }
+        this.userRepository.delete(user);
     }
 
     public List<note> listNote() {
