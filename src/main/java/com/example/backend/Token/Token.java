@@ -1,8 +1,7 @@
 package com.example.backend.Token;
 
 import com.example.backend.schema.User;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +28,6 @@ public class Token {
     @Indexed(unique = true)
     public String token;
 
-    @Enumerated(EnumType.STRING)
     public TokenType tokenType = TokenType.BEARER;
 
     public boolean revoked;

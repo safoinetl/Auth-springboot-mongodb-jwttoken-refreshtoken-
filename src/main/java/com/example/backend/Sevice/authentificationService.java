@@ -127,9 +127,6 @@ public class authentificationService {
         }
     }
 
-    public Object getCurrentUser() {
-        return repository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
-    }
 }
 

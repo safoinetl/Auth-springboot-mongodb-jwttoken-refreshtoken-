@@ -28,8 +28,9 @@ public class responsableService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository repository;
 
-    public responsableService(ChildRepository childRepository, UserRepository repository, groupRepository groupRepository, ActivityRepository activityRepository, NoteRepository noteRepository, TokenRepository tokenRepository, JwtService jwtService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public responsableService(ChildRepository childRepository, UserRepository repository, groupRepository groupRepository, ActivityRepository activityRepository, NoteRepository noteRepository, TokenRepository tokenRepository, JwtService jwtService, UserRepository userRepository, PasswordEncoder passwordEncoder, UserRepository repository1) {
         this.childRepository = childRepository;
         this.groupRepository = groupRepository;
         this.activityRepository = activityRepository;
@@ -38,6 +39,7 @@ public class responsableService {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.repository = repository;
     }
 
     public child addingChild(ChildDto request) {
@@ -159,6 +161,10 @@ public class responsableService {
     public Optional<group> getUsersGroup() {
          Optional<User> CurrentUser = this.userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return this.groupRepository.findByUserG(CurrentUser.get().getId());
+    }
+    public Object getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+
     }
 }
 

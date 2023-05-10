@@ -1,8 +1,6 @@
 package com.example.backend.schema;
 
 import com.example.backend.Token.Token;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,7 +35,6 @@ public class User implements UserDetails {
     private String email;
     @JsonIgnore
     private String password;
-    @Enumerated(EnumType.STRING)
     private Role role;
     @CreatedDate
     private Date createdAt;

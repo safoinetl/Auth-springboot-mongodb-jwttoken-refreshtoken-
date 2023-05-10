@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -29,9 +28,7 @@ public class activity {
     private String description;
     private Date startingDate;
     private Date endingDate;
-    @CreationTimestamp
     private LocalTime createdAt= LocalTime.now(ZoneId.of("GMT+08:00"));
-    @UpdateTimestamp
     private LocalTime updatedAt = LocalTime.now(ZoneId.of("GMT+08:00"));
     @DBRef
     private group group;

@@ -8,6 +8,7 @@ import com.example.backend.schema.*;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080/api/responsable", maxAge = 3600)
 @RequestMapping("/api/responsable")
 @RequiredArgsConstructor
 public class ResponsableController {
@@ -52,7 +52,7 @@ public class ResponsableController {
 
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listChild")
     public List<child> listChild() {
         return this.service.listChild();
@@ -117,4 +117,14 @@ public class ResponsableController {
             {
                 return this.service.getUsersGroup();
             }
+    @GetMapping("/CurrentAuthent")
+    public ResponseEntity<Object> user(
+    ) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "*");
+        return
+                ResponseEntity.ok()
+                        .headers(headers)
+                        .body(service.getCurrentUser());
+    }
 }

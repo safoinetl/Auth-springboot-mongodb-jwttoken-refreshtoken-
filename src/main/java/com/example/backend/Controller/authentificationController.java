@@ -39,14 +39,5 @@ public class authentificationController {
     ) throws IOException {
         service.refreshToken( request, response);
     }
-    @GetMapping("/CurrentAuthent")
-    public ResponseEntity<Object> user(
-    ) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "*");
-        return
-        ResponseEntity.ok()
-                .headers(headers)
-                .body(service.getCurrentUser());
-    }
+
 }

@@ -2,6 +2,7 @@ package com.example.backend.security;
 
 import com.example.backend.Config.JwtAuthentificationFilter;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -12,6 +13,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 
 @Configuration
@@ -25,11 +32,14 @@ public class securityConfiguration {
     @Bean
     public SecurityFilterChain  securityFilterChain (HttpSecurity http) throws  Exception {
         http
+                .cors() // Enable CORS
+                .and()
                 .csrf()
                 .disable()
-                .authorizeHttpRequests()
+                .authorizeRequests()
                 .requestMatchers(
-                        "/api/auth/**",
+                        "/api/auth/register",
+                        "/api/auth/authenticate",
                         "/v2/api-docs",
                         "/swagger-resources",
                         "/swagger-resources/**",
@@ -37,10 +47,9 @@ public class securityConfiguration {
                         "/configuration/security",
                         "/swagger-ui.html",
                         "/webjars/**",
-                        // -- Swagger UI v3 (OpenAPI)
                         "/v3/api-docs/**",
                         "/swagger-ui/**"
-                        )
+                )
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -53,11 +62,22 @@ public class securityConfiguration {
                 .logout()
                 .logoutUrl("/api/auth/logout")
                 .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-                ;
+                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
+
         return http.build();
 
 
+    }
+    @Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://localhost:5300/node"));
+        config.setAllowedHeaders( Arrays.asList("Origin", "Content-Type","Accept","Authorization"));
+        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPtIONS"));
+        source.registerCorsConfiguration("/**",config);
+        return  new CorsFilter(source);
     }
 }
 
