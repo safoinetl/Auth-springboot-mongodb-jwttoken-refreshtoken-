@@ -149,7 +149,7 @@ public class responsableService {
     }
 
     public List<User> listUser() {
-        return this.userRepository.findAll();
+        return this.userRepository.findByRole("USER");
     }
 
     public void deleteUser(String id) {
