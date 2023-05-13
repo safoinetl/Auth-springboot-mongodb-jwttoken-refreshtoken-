@@ -36,14 +36,10 @@ public class ResponsableController {
         return ResponseEntity.ok(service.addingChild(request));
     }
     //@PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/group/user/{userId}/child/{childId}")
-        public ResponseEntity<String> addChildToGroup(@PathVariable ObjectId childId    , @PathVariable String userId ) {
-        try {
-            String response = service.addChildToGrp(childId, userId);
+    @PostMapping("/group/user/{groupId}/child/{childId}")
+        public ResponseEntity<String> addChildToGroup(@PathVariable String childId    , @PathVariable String groupId ) {
+            String response = service.addChildToGrp(childId, groupId);
             return ResponseEntity.ok(response);
-        } catch (UsernameNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
     }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/group/{id}")
@@ -123,5 +119,9 @@ public class ResponsableController {
         return
                 ResponseEntity.ok()
                         .body(service.getCurrentUser());
+    }
+    @GetMapping("/GroupList")
+    public List<group> ListOfGroups(){
+        return this.service.ListGroups();
     }
 }

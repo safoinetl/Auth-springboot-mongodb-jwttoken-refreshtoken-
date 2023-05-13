@@ -9,9 +9,7 @@ import com.example.backend.Token.TokenType;
 import com.example.backend.auth.authentificationResponse;
 import com.example.backend.repository.*;
 import com.example.backend.schema.*;
-import org.bson.types.ObjectId;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,13 +59,13 @@ public class responsableService {
         this.childRepository.deleteById(id);
     }
 
-    public String addChildToGrp(ObjectId childId, String userG) {
+    public String addChildToGrp(String childId, String groupId) {
 
-        Optional<child> searchChild = childRepository.findById(childId.toString());
+        Optional<child> searchChild = childRepository.findById(childId);
         if (searchChild.isEmpty()) {
             throw new IllegalArgumentException(" child not found.");
         }
-        Optional<group> searchGroup = groupRepository.findByUserG(userG);
+        Optional<group> searchGroup = this.groupRepository.findById(groupId);
         if (searchGroup.isEmpty()) {
             throw new IllegalArgumentException(" group not found.");
         }
@@ -87,6 +85,7 @@ public class responsableService {
 
         return "Child added successfully to the group.";
     }
+
     public group getGroupById(String id) {
 
         Optional<group> gp = this.groupRepository.findById(id);
@@ -112,6 +111,7 @@ public class responsableService {
         grp.getActivities().add(newActivity);
         return activityRepository.save(newActivity);
     }
+
     public User addUser(UserDto request) {
         // Add user
         User newUser = new User();
@@ -137,6 +137,7 @@ public class responsableService {
                 .build();
         return newUser;
     }
+
     private void saveUserToken(User user, String jwtToken) {
         var token = Token.builder()
                 .user(user)
@@ -154,7 +155,7 @@ public class responsableService {
 
     public void deleteUser(String id) {
         User user = this.userRepository.findById(id).get();
-        if (user==null) {
+        if (user == null) {
             throw new IllegalStateException("User " + id + " is already deleted or does not exist");
         }
         this.userRepository.delete(user);
@@ -163,13 +164,19 @@ public class responsableService {
     public List<note> listNote() {
         return this.noteRepository.findAll();
     }
+
     public Optional<group> getUsersGroup() {
-         Optional<User> CurrentUser = this.userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Optional<User> CurrentUser = this.userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return this.groupRepository.findByUserG(CurrentUser.get().getId());
     }
+
     public User getCurrentUser() {
-        Optional<User> user= this.repository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Optional<User> user = this.repository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return user.get();
+    }
+
+    public List<group> ListGroups() {
+        return this.groupRepository.findAll();
     }
 }
 
