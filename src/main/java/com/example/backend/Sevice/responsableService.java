@@ -1,10 +1,7 @@
 package com.example.backend.Sevice;
 
 import com.example.backend.Config.JwtService;
-import com.example.backend.DTO.ActivityDto;
-import com.example.backend.DTO.ChildDto;
-import com.example.backend.DTO.GroupRequest;
-import com.example.backend.DTO.UserDto;
+import com.example.backend.DTO.*;
 import com.example.backend.Token.Token;
 import com.example.backend.Token.TokenType;
 import com.example.backend.auth.authentificationResponse;
@@ -158,7 +155,7 @@ public class responsableService {
         this.userRepository.delete(user);
     }
 
-    public note addNoteToChild(note note, String id) {
+    public note addNoteToChild(NoteDto note, String id) {
         Optional<child> child = this.childRepository.findById(id);
         child child1 = child.get();
         note newNote = new note();

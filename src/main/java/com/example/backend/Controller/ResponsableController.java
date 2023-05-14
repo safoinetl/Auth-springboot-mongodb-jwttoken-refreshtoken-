@@ -1,9 +1,6 @@
 package com.example.backend.Controller;
 
-import com.example.backend.DTO.ActivityDto;
-import com.example.backend.DTO.ChildDto;
-import com.example.backend.DTO.GroupRequest;
-import com.example.backend.DTO.UserDto;
+import com.example.backend.DTO.*;
 import com.example.backend.Sevice.responsableService;
 import com.example.backend.schema.*;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -146,7 +143,7 @@ public class ResponsableController {
     }
 
     @PostMapping("/AddchildNote/{id}")
-    public note childNote(@RequestBody note note, @PathVariable String id) {
+    public note childNote(@RequestBody NoteDto note, @PathVariable String id) {
         return this.service.addNoteToChild(note, id);
     }
     @GetMapping("/{childId}/notes")
