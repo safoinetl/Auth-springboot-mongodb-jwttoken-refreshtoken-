@@ -12,7 +12,9 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 
 import java.time.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Document
@@ -34,4 +36,12 @@ public class child {
     private LocalTime updatedAt = LocalTime.now(ZoneId.of("GMT+08:00"));
     @DBRef
     private group group;
+    @DBRef
+    private List<note> notes;
+    public List<note> getActivities() {
+        if (notes == null) {
+            return new ArrayList<>();
+        }
+        return notes;
+    }
 }

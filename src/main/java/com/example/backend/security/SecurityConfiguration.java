@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                 .and()
                 .csrf()
                 .disable()
-                .authorizeRequests()
+                .authorizeHttpRequests()
                 .requestMatchers(
                         "/api/auth/register",
                         "/api/auth/authenticate",
@@ -64,7 +64,6 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
     @Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

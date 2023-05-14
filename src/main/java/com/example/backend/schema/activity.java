@@ -32,6 +32,8 @@ public class activity {
     private LocalTime updatedAt = LocalTime.now(ZoneId.of("GMT+08:00"));
     @DBRef
     private group group;
+    @DBRef
+    private User user;
 
 
 }

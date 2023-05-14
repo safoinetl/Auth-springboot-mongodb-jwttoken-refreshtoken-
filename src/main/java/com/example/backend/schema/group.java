@@ -33,6 +33,7 @@ public class group {
     private User userG;
     @DBRef
     private List<activity> activities;
+    private String desc;
 
     public List<child> getChildren() {
         if (children == null) {
@@ -46,5 +47,6 @@ public class group {
         }
         return activities;
     }
+
 
 }

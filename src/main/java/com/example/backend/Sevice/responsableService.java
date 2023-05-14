@@ -9,37 +9,37 @@ import com.example.backend.Token.TokenType;
 import com.example.backend.auth.authentificationResponse;
 import com.example.backend.repository.*;
 import com.example.backend.schema.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class responsableService {
-    private final ChildRepository childRepository;
-    private final groupRepository groupRepository;
-    private final ActivityRepository activityRepository;
-    private final NoteRepository noteRepository;
-    private final TokenRepository tokenRepository;
+    @Autowired
+    private ChildRepository childRepository;
+    @Autowired
+    private groupRepository groupRepository;
+    @Autowired
+    private ActivityRepository activityRepository;
+    @Autowired
+    private NoteRepository noteRepository;
+    @Autowired
+    private TokenRepository tokenRepository;
+    @Autowired
 
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository repository;
+    private JwtService jwtService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository repository;
 
-    public responsableService(ChildRepository childRepository, UserRepository repository, groupRepository groupRepository, ActivityRepository activityRepository, NoteRepository noteRepository, TokenRepository tokenRepository, JwtService jwtService, UserRepository userRepository, PasswordEncoder passwordEncoder, UserRepository repository1) {
-        this.childRepository = childRepository;
-        this.groupRepository = groupRepository;
-        this.activityRepository = activityRepository;
-        this.noteRepository = noteRepository;
-        this.tokenRepository = tokenRepository;
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.repository = repository;
-    }
 
     public child addingChild(ChildDto request) {
         child newChild = new child();
@@ -102,11 +102,12 @@ public class responsableService {
     }
 
     public activity addActivity(ActivityDto request, String id) {
-        var grp = getGroupById(id);
+        group grp = groupRepository.findByUserG(id).get();
         activity newActivity = new activity();
         newActivity.setDescription(request.getDescription());
         newActivity.setStartingDate(request.getStartingDate());
         newActivity.setEndingDate(request.getEndingDate());
+        newActivity.setUser(getCurrentUser());
         newActivity.setGroup(grp);
         grp.getActivities().add(newActivity);
         return activityRepository.save(newActivity);
@@ -121,12 +122,7 @@ public class responsableService {
         newUser.setRole(Role.USER);
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         this.userRepository.save(newUser);
-
         // Add group
-        group grp = new group();
-        grp.setNameG(newUser.getFirstName() + " " + "group");
-        grp.setUserG(newUser);
-        groupRepository.save(grp);
         var jwtToken = jwtService.generateToken(newUser);
         var refreshToken = jwtService.generateRefreshToken(newUser);
 
@@ -161,6 +157,19 @@ public class responsableService {
         this.userRepository.delete(user);
     }
 
+    public note addNoteToChild(note note, String id) {
+        Optional<child> child = this.childRepository.findById(id);
+        child child1 = child.get();
+        note newNote = new note();
+        newNote.setSubject(note.getSubject());
+        newNote.setDesc(note.getDesc());
+        newNote.setChild(child1);
+        noteRepository.save(newNote);
+        child1.getNotes().add(newNote);
+        childRepository.save(child1);
+        return newNote;
+    }
+
     public List<note> listNote() {
         return this.noteRepository.findAll();
     }
@@ -175,8 +184,44 @@ public class responsableService {
         return user.get();
     }
 
-    public List<group> ListGroups() {
-        return this.groupRepository.findAll();
+    public List<group> listGroups() {
+        return groupRepository.findAll();
+    }
+
+    public Optional<child> findChildById(String id) {
+        return childRepository.findById(id);
+    }
+
+    public List<note> listChildNotes(String id, Date startDate, Date endDate) {
+        Optional<child> child = childRepository.findById(id);
+        Object childId = child.get().getId();
+        return noteRepository.findNoteByUserAndTimeRange(childId, startDate, endDate);
+    }
+
+    public group addGroup(group group, String userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            group newGroup = new group();
+            newGroup.setNameG(group.getNameG());
+            newGroup.setDesc(group.getDesc());
+            newGroup.setUserG(user);
+            groupRepository.save(newGroup);
+            user.getGroup().add(newGroup);
+            userRepository.save(user);
+            return newGroup;
+        } else {
+            throw new IllegalArgumentException("User not found with ID: " + userId);
+        }
+    }
+
+    public List<activity> UserlistActivity(String id) {
+
+        return this.activityRepository.findByUser(id);
+    }
+
+    public Object EmpGroupList(String id) {
+        return this.groupRepository.findByUserG(id);
     }
 }
 

@@ -17,6 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +44,7 @@ public class User implements UserDetails {
     @DBRef
     private List<Token> tokens;
     @DBRef
-    private group group;
+    private List<group> group;
     @DBRef
     private note note;
 
@@ -83,5 +84,10 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
+    public List<group> groups() {
+        if (group == null) {
+            return new ArrayList<>();
+        }
+        return group;
+    }
 }

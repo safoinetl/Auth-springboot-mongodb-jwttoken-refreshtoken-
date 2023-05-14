@@ -6,14 +6,13 @@ import com.example.backend.DTO.UserDto;
 import com.example.backend.Sevice.responsableService;
 import com.example.backend.schema.*;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ import java.util.Optional;
 @RequestMapping("/api/responsable")
 @RequiredArgsConstructor
 public class ResponsableController {
-    private  responsableService service;
+    private responsableService service;
 
     @Autowired
     public ResponsableController(responsableService service) {
@@ -35,20 +34,22 @@ public class ResponsableController {
     ) {
         return ResponseEntity.ok(service.addingChild(request));
     }
+
     //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/group/user/{groupId}/child/{childId}")
-        public ResponseEntity<String> addChildToGroup(@PathVariable String childId    , @PathVariable String groupId ) {
-            String response = service.addChildToGrp(childId, groupId);
-            return ResponseEntity.ok(response);
+    public ResponseEntity<String> addChildToGroup(@PathVariable String childId, @PathVariable String groupId) {
+        String response = service.addChildToGrp(childId, groupId);
+        return ResponseEntity.ok(response);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/group/{id}")
-    public ResponseEntity<group> search(@PathVariable() String id ){
+    public ResponseEntity<group> search(@PathVariable() String id) {
         return ResponseEntity.ok(service.getGroupById(id));
 
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listChild")
     public List<child> listChild() {
         return this.service.listChild();
@@ -63,10 +64,11 @@ public class ResponsableController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/registerActivity/{id}")
     public ResponseEntity<activity> registerActivity(
-            @RequestBody ActivityDto request,@PathVariable String id
+            @RequestBody ActivityDto request, @PathVariable String id
     ) {
-        return ResponseEntity.ok(service.addActivity(request,id));
+        return ResponseEntity.ok(service.addActivity(request, id));
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listActivity")
     public List<activity> listActivity() {
@@ -86,17 +88,18 @@ public class ResponsableController {
     ) {
         return ResponseEntity.ok(service.addUser(request));
     }
-    //@PreAuthorize("hasRole('ADMIN')")
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listUser")
     public List<User> listUser() {
 
         return
-               this.service.listUser();
+                this.service.listUser();
 
     }
 
 
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/deleteUser/{id}")
     public void deleteUser(@PathVariable String id) {
         this.service.deleteUser(id);
@@ -107,12 +110,12 @@ public class ResponsableController {
     public void listNote() {
         this.service.listNote();
     }
-    @PreAuthorize("hasRole('USER')")
+
     @GetMapping("/usersGroup")
-    public Optional<group> findGroupByUser()
-            {
-                return this.service.getUsersGroup();
-            }
+    public Optional<group> findGroupByUser() {
+        return this.service.getUsersGroup();
+    }
+
     @GetMapping("/CurrentAuthent")
     public ResponseEntity<Object> user(
     ) {
@@ -120,8 +123,38 @@ public class ResponsableController {
                 ResponseEntity.ok()
                         .body(service.getCurrentUser());
     }
+
     @GetMapping("/GroupList")
-    public List<group> ListOfGroups(){
-        return this.service.ListGroups();
+    public List<group> listOfGroups() {
+        return service.listGroups();
+    }
+
+    @GetMapping("/child/{id}")
+    public Optional<child> findChild(@PathVariable String id) {
+        return this.service.findChildById(id);
+    }
+
+    @PostMapping("/AddchildNote/{id}")
+    public note childNote(@RequestBody note note, @PathVariable String id) {
+        return this.service.addNoteToChild(note, id);
+    }
+    @GetMapping("/{childId}/notes")
+    public List<note> getChildNotesWithinTimeInterval(
+            @PathVariable String childId,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date endDate) {
+        return service.listChildNotes(childId, startDate, endDate);
+    }
+    @PostMapping("/{userId}/groups")
+    public group addGroup(@RequestBody group group, @PathVariable String userId) {
+        return service.addGroup(group, userId);
+    }
+    @GetMapping("/{userId}/activities")
+    public List<activity> getUserActivities(@PathVariable String userId) {
+        return service.UserlistActivity(userId);
+    }
+    @GetMapping("/{userId}/groups")
+    public Object EmpGroup(@PathVariable String userId ){
+        return service.EmpGroupList(userId);
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Date;
 
 @Document
 @Builder
@@ -27,5 +26,5 @@ public class note {
     private LocalTime createdAt= LocalTime.now(ZoneId.of("GMT+08:00"));
     private LocalTime updatedAt = LocalTime.now(ZoneId.of("GMT+08:00"));
     @DBRef
-    private User user;
+    private child child;
 }
