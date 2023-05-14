@@ -6,6 +6,10 @@ import com.example.backend.DTO.GroupRequest;
 import com.example.backend.DTO.UserDto;
 import com.example.backend.Sevice.responsableService;
 import com.example.backend.schema.*;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,9 +21,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@SecurityScheme(name = "BearerAuth",
+        scheme = "Bearer",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        in = SecuritySchemeIn.HEADER)
 @RestController
 @RequestMapping("/api/responsable")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "BearerAuth")
 public class ResponsableController {
     private responsableService service;
 
