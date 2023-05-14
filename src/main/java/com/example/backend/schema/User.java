@@ -17,6 +17,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,13 +40,13 @@ public class User implements UserDetails {
     private String password;
     private Role role;
     @CreatedDate
-    private Date createdAt;
+    private LocalTime createdAt= LocalTime.now(ZoneId.of("GMT+08:00"));
     @LastModifiedDate
-    private Date lastModifiedAt;
+    private LocalTime updatedAt = LocalTime.now(ZoneId.of("GMT+08:00"));
     @DBRef
     private List<Token> tokens;
     @DBRef
-    private List<group> group;
+    private List<group> groups;
     @DBRef
     private note note;
 
@@ -84,10 +86,11 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-    public List<group> groups() {
-        if (group == null) {
+    public List<group> getGroups() {
+        if (groups == null) {
             return new ArrayList<>();
         }
-        return group;
+        return groups;
     }
+
 }

@@ -2,6 +2,7 @@ package com.example.backend.Controller;
 
 import com.example.backend.DTO.ActivityDto;
 import com.example.backend.DTO.ChildDto;
+import com.example.backend.DTO.GroupRequest;
 import com.example.backend.DTO.UserDto;
 import com.example.backend.Sevice.responsableService;
 import com.example.backend.schema.*;
@@ -145,10 +146,12 @@ public class ResponsableController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date endDate) {
         return service.listChildNotes(childId, startDate, endDate);
     }
-    @PostMapping("/{userId}/groups")
-    public group addGroup(@RequestBody group group, @PathVariable String userId) {
-        return service.addGroup(group, userId);
+    @PostMapping("/groups/{userId}")
+    public ResponseEntity<group> addGroup(@RequestBody GroupRequest groupRequest, @PathVariable String userId) {
+        group group = service.addGroup(groupRequest, userId);
+        return ResponseEntity.ok(group);
     }
+
     @GetMapping("/{userId}/activities")
     public List<activity> getUserActivities(@PathVariable String userId) {
         return service.UserlistActivity(userId);

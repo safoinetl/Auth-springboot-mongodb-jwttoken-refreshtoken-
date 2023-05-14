@@ -3,6 +3,7 @@ package com.example.backend.Sevice;
 import com.example.backend.Config.JwtService;
 import com.example.backend.DTO.ActivityDto;
 import com.example.backend.DTO.ChildDto;
+import com.example.backend.DTO.GroupRequest;
 import com.example.backend.DTO.UserDto;
 import com.example.backend.Token.Token;
 import com.example.backend.Token.TokenType;
@@ -198,21 +199,16 @@ public class responsableService {
         return noteRepository.findNoteByUserAndTimeRange(childId, startDate, endDate);
     }
 
-    public group addGroup(group group, String userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+    public group addGroup(GroupRequest group, String userId) {
+        User user = userRepository.findById(userId).get();
             group newGroup = new group();
             newGroup.setNameG(group.getNameG());
             newGroup.setDesc(group.getDesc());
             newGroup.setUserG(user);
             groupRepository.save(newGroup);
-            user.getGroup().add(newGroup);
+            user.getGroups().add(newGroup);
             userRepository.save(user);
             return newGroup;
-        } else {
-            throw new IllegalArgumentException("User not found with ID: " + userId);
-        }
     }
 
     public List<activity> UserlistActivity(String id) {
