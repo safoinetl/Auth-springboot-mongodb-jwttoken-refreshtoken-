@@ -115,8 +115,9 @@ public class ResponsableController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listNote")
-    public void listNote() {
-        this.service.listNote();
+    public List<note> listNote() {
+
+         return this.service.listNote();
     }
 
     @GetMapping("/usersGroup")

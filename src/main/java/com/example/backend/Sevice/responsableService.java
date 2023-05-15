@@ -100,7 +100,7 @@ public class responsableService {
     }
 
     public activity addActivity(ActivityDto request, String id) {
-        group grp = groupRepository.findByUserG(id).get();
+        group grp = groupRepository.findByUserG(id);
         activity newActivity = new activity();
         newActivity.setDescription(request.getDescription());
         newActivity.setStartingDate(request.getStartingDate());
@@ -166,12 +166,13 @@ public class responsableService {
     }
 
     public List<note> listNote() {
-        return this.noteRepository.findAll();
+       return this.noteRepository.findAll();
     }
 
     public Optional<group> getUsersGroup() {
         Optional<User> CurrentUser = this.userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        return this.groupRepository.findByUserG(CurrentUser.get().getId());
+        System.out.println(CurrentUser);
+        return Optional.ofNullable(this.groupRepository.findByUserG(CurrentUser.get().getId()));
     }
 
     public User getCurrentUser() {
@@ -210,8 +211,8 @@ public class responsableService {
         return this.activityRepository.findByUser(id);
     }
 
-    public Object EmpGroupList(String id) {
-        return this.groupRepository.findByUserG(id);
+    public List<Object> EmpGroupList(String id) {
+        return (List<Object>) this.groupRepository.findByUserG(id);
     }
 }
 
