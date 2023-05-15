@@ -38,7 +38,7 @@ public class child {
     private group group;
     @DBRef
     private List<note> notes;
-    public List<note> getActivities() {
+    public List<note> GetNotes() {
         if (notes == null) {
             return new ArrayList<>();
         }

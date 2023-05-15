@@ -149,9 +149,6 @@ public class responsableService {
 
     public void deleteUser(String id) {
         User user = this.userRepository.findById(id).get();
-        if (user == null) {
-            throw new IllegalStateException("User " + id + " is already deleted or does not exist");
-        }
         this.userRepository.delete(user);
     }
 
@@ -163,7 +160,7 @@ public class responsableService {
         newNote.setDesc(note.getDesc());
         newNote.setChild(child1);
         noteRepository.save(newNote);
-        child1.getNotes().add(newNote);
+        child1.GetNotes().add(newNote);
         childRepository.save(child1);
         return newNote;
     }

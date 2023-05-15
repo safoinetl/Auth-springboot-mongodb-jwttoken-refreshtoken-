@@ -48,10 +48,15 @@ public class User implements UserDetails {
     @DBRef
     private List<group> groups;
     @DBRef
-    private note note;
+    private List<note> note;
 
 
-
+    public List<note> note() {
+        if (note == null) {
+            return new ArrayList<>();
+        }
+        return note;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
